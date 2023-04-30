@@ -92,7 +92,58 @@ function startPrompt() {
 
                     break;
                 case 'Add a Role':
-                    // Function to add a role
+                    async function addRole() {
+                        try {
+                            const { title, salary, departmentID } = await inquirer.prompt([
+                                {
+                                    type: 'input',
+                                    name: 'title',
+                                    message: 'Enter a role title',
+                                    validate: function (input) {
+                                        if (input.length < 3) {
+                                            return 'Role title must be at least 3 characters long';
+                                        } else {
+                                            return true;
+                                        }
+                                    }
+                                },
+                                {
+                                    type: 'input',
+                                    name: 'salary',
+                                    message: 'Enter the salary for the role',
+                                    validate: function (input) {
+                                        if (isNaN(input)) {
+                                            return 'Salary must be a number';
+                                        } else {
+                                            return true;
+                                        }
+                                    }
+                                },
+                                {
+                                    type: 'input',
+                                    name: 'departmentID',
+                                    message: 'Enter the ID of the department this role belongs to',
+                                    validate: function (input) {
+                                        if (isNaN(input)) {
+                                            return 'Department ID must be a number';
+                                        } else {
+                                            return true;
+                                        }
+                                    }
+                                }
+                            ]);
+                            const conn = await dbpromise.getConnection();
+                            const [rows] = await conn.execute(`INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`, [title, salary, departmentID]);
+                            console.log(`Added ${title} into Roles`);
+                            conn.release(); // Release the connection when done
+                        } catch (err) {
+                            console.error(err);
+                        } finally {
+                            dbpromise.end(); // End the connection pool when done
+                        }
+                    }
+
+                    addRole();
                     break;
                 case 'Update an Employee':
                     // Function to update an employee
