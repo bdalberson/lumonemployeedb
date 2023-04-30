@@ -142,11 +142,68 @@ function startPrompt() {
                             dbpromise.end(); // End the connection pool when done
                         }
                     }
-
                     addRole();
                     break;
                 case 'Update an Employee':
-                    // Function to update an employee
+                    async function updateEmployee() {
+                        try {
+                          const [roles] = await dbpromise.execute('SELECT id, title FROM role');
+                          const [employees] = await dbpromise.execute('SELECT id, CONCAT(first_name, " ", last_name) AS name FROM employee');
+                      
+                          const { first_name, last_name, role_id, manager_id } = await inquirer.prompt([
+                            {
+                              type: 'input',
+                              name: 'first_name',
+                              message: 'Enter the employee\'s first name:'
+                            },
+                            {
+                              type: 'input',
+                              name: 'last_name',
+                              message: 'Enter the employee\'s last name:'
+                            },
+                            {
+                              type: 'list',
+                              name: 'role_id',
+                              message: 'Select the employee\'s role:',
+                              choices: roles.map(role => ({
+                                name: role.title,
+                                value: role.id
+                              }))
+                            },
+                            {
+                              type: 'list',
+                              name: 'manager_id',
+                              message: 'Select the employee\'s manager:',
+                              choices: [
+                                {
+                                  name: 'None',
+                                  value: null
+                                },
+                                ...employees.map(employee => ({
+                                  name: employee.name,
+                                  value: employee.id
+                                }))
+                              ]
+                            }
+                          ]);
+                      
+                          const [rows] = await dbpromise.execute('UPDATE employee SET role_id = ?, manager_id = ? WHERE first_name = ? AND last_name = ?', [
+                            role_id,
+                            manager_id,
+                            first_name,
+                            last_name
+                          ]);
+                      
+                          console.log(`Successfully updated ${rows.affectedRows} employee record(s).`);
+                        } catch (err) {
+                          console.error(err);
+                        } finally {
+                          dbpromise.end();
+                        }
+                      }
+                      
+                      updateEmployee();
+                      
                     break;
                 default:
                     console.log('Invalid choice');
