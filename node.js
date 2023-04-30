@@ -1,5 +1,4 @@
 const mysql = require('mysql2');
-const inquirer = require('inquirer');
 const menu = require('inquirer-menu');
 const table = require('console.table');
  
@@ -19,44 +18,74 @@ function start_prompt() {
     const viewAllEmployees = {
         message: 'View All Employees',
         choices: { 
-            callApi: function () {
-                console.log(db.query('SELECT * FROM employee;', (err, results) => {
-                    console.log(results);
-                    console.log(err);
-                }))
-                return;
-            }
+          callApi: function () {
+            console.log(db.query('SELECT * FROM employee;', (err, results) => {
+              console.log(results);
+              console.log(err);
+            }))
+            return;
+          }
         }
-    };
+      };
 
-    const viewAllRoles = {
+      const viewAllRoles = {
         message: 'View All Roles',
         choices: { 
-            callApi: function () {
-                console.log(db.query('SELECT * FROM role;', (err, results) => {
-                    console.log(results);
-                    console.log(err);
-                }))
-                return;
-            }
+          callApi: function () {
+            console.log(db.query('SELECT * FROM role;', (err, results) => {
+              console.log(results);
+              console.log(err);
+            }))
+            return;
+          }
         }
-    };
-
-    const viewAllDepartments= {
+      };
+      const viewAllDepartments= {
         message: 'View All Departments',
         choices: { 
             callApi: function () {
-                console.log(db.query('SELECT * FROM department;', (err, results) => {
-                    console.log(results);
-                    console.log(err);
-                }))
+                db.query('SELECT * FROM department;', (err, results) => {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        console.log(results);
+                    }
+                });
+            }
+        }
+    };
+    
+    const addDepartment = {
+        message: 'Add a Department',
+        choices: {
+            callApi: function () {
+                console.log('red-api called');
                 return;
             }
         }
     };
 
+    const addRole = {
+        message: 'Add a Role',
+        choices: {
+            callApi: function () {
+                console.log('red-api called');
+                return;
+            }
+        }
+    };
     const addEmployee = {
         message: 'Add an Employee',
+        choices: {
+            callApi: function () {
+                console.log('red-api called');
+                return;
+            }
+        }
+    };
+
+    const updateEmployee = {
+        message: 'Update an employee role',
         choices: {
             callApi: function () {
                 console.log('red-api called');
@@ -80,7 +109,10 @@ function start_prompt() {
                 viewAllEmployees: viewAllEmployees,
                 viewAllRoles: viewAllRoles,
                 viewAllDepartments: viewAllDepartments,
+                addDepartment: addDepartment,
+                addRole: addRole,
                 addEmployee: addEmployee,
+                updateEmployee: updateEmployee,
 
             }
         };
