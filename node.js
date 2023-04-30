@@ -1,8 +1,19 @@
 const mysql = require('mysql2');
+const mysqlpromise = require('mysql2/promise');
 const inquirer = require('inquirer');
 require('console.table');
 
 const db = mysql.createConnection(
+    {
+        host: `127.0.0.1`,
+        user: 'root',
+        password: "",
+        database: 'lumon_db'
+    },
+    console.log("connected to lumon db!")
+);
+
+const dbpromise = mysqlpromise.createPool(
     {
         host: `127.0.0.1`,
         user: 'root',
@@ -43,11 +54,42 @@ function startPrompt() {
                         console.log(err);
                     })
                     break;
-                case 'View All Departments':
-                    // Function to view all departments
+                case 'View All Departments': 
+
+                    db.query('SELECT id, name FROM department;', (err, results) => {
+                    console.table(results);
+                    console.log(err);
+                    })
                     break;
                 case 'Add a Department':
-                    // Function to add a department
+                    async function addDepartment() {
+                        try {
+                          const { name } = await inquirer.prompt([{
+                            type: 'input',
+                            name: 'name',
+                            message: 'Enter a department name',
+                            validate: function (input) {
+                              if (input.length < 3) {
+                                return 'Department name must be at least 3 characters long';
+                              } else {
+                                return true;
+                              }
+                            }
+                          }]);
+                      
+                          const conn = await dbpromise.getConnection();
+                          const [rows] = await conn.execute('INSERT INTO department (name) VALUES (?)', [name]);
+                          console.log(`Added ${name} into Departments`);
+                          conn.release(); // Release the connection when done
+                        } catch (err) {
+                          console.error(err);
+                        } finally {
+                          dbpromise.end(); // End the connection pool when done
+                        }
+                      }
+                      
+                      addDepartment();
+
                     break;
                 case 'Add a Role':
                     // Function to add a role
