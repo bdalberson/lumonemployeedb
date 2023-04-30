@@ -147,10 +147,10 @@ function startPrompt() {
                 case 'Update an Employee':
                     async function updateEmployee() {
                         try {
-                          const [roles] = await dbpromise.execute('SELECT id, title FROM role');
-                          const [employees] = await dbpromise.execute('SELECT id, CONCAT(first_name, " ", last_name) AS name FROM employee');
+                          const [roles] = await dbpromise.execute('SELECT id, title FROM role');   //grabs roles using array destructuring
+                          const [employees] = await dbpromise.execute('SELECT id, CONCAT(first_name, " ", last_name) AS name FROM employee');//grabs employees and connects them with concat
                       
-                          const { first_name, last_name, role_id, manager_id } = await inquirer.prompt([
+                          const { first_name, last_name, role_id, manager_id } = await inquirer.prompt([  //does the prompts and waits for it to finsih before assigning variables
                             {
                               type: 'input',
                               name: 'first_name',
@@ -187,7 +187,7 @@ function startPrompt() {
                             }
                           ]);
                       
-                          const [rows] = await dbpromise.execute('UPDATE employee SET role_id = ?, manager_id = ? WHERE first_name = ? AND last_name = ?', [
+                          const [rows] = await dbpromise.execute('UPDATE employee SET role_id = ?, manager_id = ? WHERE first_name = ? AND last_name = ?', [ //sets the values based on the prompts the ? placeholders are variables that are inserted
                             role_id,
                             manager_id,
                             first_name,
@@ -201,9 +201,7 @@ function startPrompt() {
                           dbpromise.end();
                         }
                       }
-                      
                       updateEmployee();
-                      
                     break;
                 default:
                     console.log('Invalid choice');
