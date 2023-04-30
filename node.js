@@ -1,6 +1,6 @@
 const mysql = require('mysql2');
-const menu = require('inquirer-menu');
-const table = require('console.table');
+const  inquirer = require('inquirer');
+require('console.table');
  
 const db = mysql.createConnection(
     {
@@ -15,14 +15,16 @@ const db = mysql.createConnection(
 
 function start_prompt() {
     lumonlogo()
-    const viewAllEmployees = {
+    const viewAllEmployees = { 
+        name:"viewAllEmployees",
         message: 'View All Employees',
+        type: "list",
         choices: { 
           callApi: function () {
-            console.log(db.query('SELECT * FROM employee;', (err, results) => {
-              console.log(results);
+            db.query('SELECT employee.id,employee.first_name, employee.last_name, role.title, department.name, role.salary FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id;', (err, results) => {
+              console.table(results);
               console.log(err);
-            }))
+            })
             return;
           }
         }
@@ -32,10 +34,10 @@ function start_prompt() {
         message: 'View All Roles',
         choices: { 
           callApi: function () {
-            console.log(db.query('SELECT * FROM role;', (err, results) => {
+            db.query('SELECT * FROM role;', (err, results) => {
               console.log(results);
               console.log(err);
-            }))
+            })
             return;
           }
         }
@@ -93,10 +95,20 @@ function start_prompt() {
             }
         }
     };
-
+    const createemployee = async() =>{
+        await menu.prompt([ 
+            {
+                type: "input",
+                message: "please enter employees first name",
+                name: "first_name"
+            }
+        ]).then((data)=>{
+            console.log(data)
+        })
+    }
     let level = 0;
 
-    function createMenu() {
+      function createMenu() {
         return {
             message: 'main-menu level ' + level,
             choices: {
@@ -106,14 +118,14 @@ function start_prompt() {
 
                     return;
                 },
-                viewAllEmployees: viewAllEmployees,
-                viewAllRoles: viewAllRoles,
-                viewAllDepartments: viewAllDepartments,
-                addDepartment: addDepartment,
-                addRole: addRole,
-                addEmployee: addEmployee,
-                updateEmployee: updateEmployee,
-
+                view_all_employees: viewAllEmployees,
+                view_all_roles: viewAllRoles,
+                view_all_departments: viewAllDepartments,
+                add_department: addDepartment,
+                add_role: addRole,
+                add_employee: addEmployee,
+                update_employee: updateEmployee,
+                createemployee: createemployee()
             }
         };
     };

@@ -49,13 +49,13 @@ VALUES ("Macrodata Refinement"),
        ("CEO");
 
 
-INSERT INTO role(title, salary)
-VALUES ("Refiner", 120000),
-    ("Manager", 140000),
-    ("Designer", 120000),
-    ("Therapist", 160000),
-    ("Guard", 100000),
-    ("CEO", 500000);
+INSERT INTO role(title, salary,department_id)
+VALUES ("Refiner", 120000,1),
+    ("Manager", 140000,1),
+    ("Designer", 120000,2),
+    ("Therapist", 160000,3),
+    ("Guard", 100000,4),
+    ("CEO", 500000,5);
        
 
 
