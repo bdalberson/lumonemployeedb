@@ -9,7 +9,7 @@
 | Node.JS| [https://developer.mozilla.org/en-US/docs/Glossary/Node.js?utm_source=wordpress%20blog&utm_medium=content%20link&utm_campaign=promote%20mdn](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)    
 | Inquirer |:https://www.npmjs.com/package/inquirer:| 
 | Mysql2 |:https://www.npmjs.com/package/mysql2:| 
-| JP2A |:https://github.com/cslarsen/jp2a.:| 
+| JP2A |:https://github.com/cslarsen/jp2a:| 
 
 
 ## Description 
