@@ -78,4 +78,4 @@ VALUES
     ("Baird", "Eagan", 5, 17),
     ("Leonora", "Eagan", 5, 17),
     ("Phillip", "Eagan", 5, 17),
-    ("Jame"
+    ("Jame", "Eagan", 5, 17);
