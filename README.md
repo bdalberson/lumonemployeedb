@@ -14,7 +14,10 @@
 ## Description 
 ![plot](./assets/Screen%20Shot%202023-04-30%20at%207.50.10%20PM.png)
 
-This is a content management tool which has a DB of employees, their roles and salaries.  Users can view and update data directly to the database. 
+Video of the application in action: https://drive.google.com/file/d/1k0YrNf4kVxXw485En4oMGFZ3R37VN9dK/view
+
+
+This is a content management system(CMS) which has a DB of employees, their roles and salaries.  Users can view and update data directly to the database. 
 
 
 
@@ -137,7 +140,7 @@ You will need to clone down all the repro.  Install the needed NPM packages. The
 ## Learning Points 
 
 
-Geeze learning MYSQL and how to do async functions was quite a beast. I failed and failed and failed some more untiL I was finally able to get some help and get over the hump.    
+Geeze learning MYSQL and how to do async functions was quite a beast. I failed and failed and failed some more untiL I was finally able to get some help and get over the hump. Also I initially built this with inquirer-menu which does not have prompts.  I had to refactor a lot of it which left me with no time to work on the bonus material.  Sad. 
 
 
 ## Author Info
