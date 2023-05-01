@@ -20,8 +20,25 @@ const dbpromise = mysqlpromise.createPool(
         password: "",
         database: 'lumon_db'
     },
-    console.log("connected to lumon db!")
 );
+
+function exitPrompt(){
+    inquirer
+        .prompt([
+            {
+                type: 'list',
+                name: 'action',
+                message: 'Return?',
+                choices: [
+                    'Exit'
+                ]
+            }
+        ]).then (action => {
+            console.clear();
+            startPrompt();
+
+        })
+}
 
 function startPrompt() {
     inquirer
@@ -47,12 +64,14 @@ function startPrompt() {
                         console.table(results);
                         console.log(err);
                     })
+                    exitPrompt()
                     break;
                 case 'View All Roles':
                     db.query('SELECT role.id AS role_id, role.title AS job_title, department.name AS department, role.salary FROM role JOIN department ON role.department_id = department.id;', (err, results) => {
                         console.table(results);
                         console.log(err);
                     })
+                    exitPrompt()
                     break;
                 case 'View All Departments': 
 
@@ -60,6 +79,7 @@ function startPrompt() {
                     console.table(results);
                     console.log(err);
                     })
+                    exitPrompt()
                     break;
                 case 'Add a Department':
                     async function addDepartment() {
@@ -80,11 +100,11 @@ function startPrompt() {
                           const conn = await dbpromise.getConnection();
                           const [rows] = await conn.execute('INSERT INTO department (name) VALUES (?)', [name]);
                           console.log(`Added ${name} into Departments`);
-                          conn.release(); // Release the connection when done
+                          exitPrompt()
                         } catch (err) {
                           console.error(err);
                         } finally {
-                          dbpromise.end(); // End the connection pool when done
+                          
                         }
                       }
                       
@@ -135,11 +155,10 @@ function startPrompt() {
                             const conn = await dbpromise.getConnection();
                             const [rows] = await conn.execute(`INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`, [title, salary, departmentID]);
                             console.log(`Added ${title} into Roles`);
-                            conn.release(); // Release the connection when done
+                            exitPrompt()
                         } catch (err) {
                             console.error(err);
                         } finally {
-                            dbpromise.end(); // End the connection pool when done
                         }
                     }
                     addRole();
@@ -198,12 +217,10 @@ function startPrompt() {
                         } catch (err) {
                           console.error(err);
                         } finally {
-                          dbpromise.end();
                         }
                       }
                       
                       updateEmployee();
-                      
                     break;
                 default:
                     console.log('Invalid choice');
@@ -270,4 +287,3 @@ function lumonlogo() {
 
 }
 
-// start_prompt()
