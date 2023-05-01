@@ -154,7 +154,7 @@ SWEngineer with a lot for the show Severence.
 
 ## Credits
 
-Study groups, TAs, and study groups were all useful and needed to get this done.  Also the family for giving me the space and time I needed.   
+JP2A(https://github.com/cslarsen/jp2a) was used to make the cool ascii art. Study groups, TAs, and study groups were all useful and needed to get this done.  Also the family for giving me the space and time I needed.   
 
 ---
 
