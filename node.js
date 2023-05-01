@@ -187,7 +187,7 @@ function startPrompt() {
                             }
                           ]);
                       
-                          const [rows] = await dbpromise.execute('UPDATE employee SET role_id = ?, manager_id = ? WHERE first_name = ? AND last_name = ?', [ //sets the values based on the prompts the ? placeholders are variables that are inserted
+                          const [rows] = await dbpromise.execute('UPDATE employee SET role_id = ?, manager_id = ? WHERE first_name = ? AND last_name = ?', [ //sets the values based on the prompts the ? placeholders are variables that are
                             role_id,
                             manager_id,
                             first_name,
@@ -201,7 +201,9 @@ function startPrompt() {
                           dbpromise.end();
                         }
                       }
+                      
                       updateEmployee();
+                      
                     break;
                 default:
                     console.log('Invalid choice');
