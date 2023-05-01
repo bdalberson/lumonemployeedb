@@ -1,99 +1,159 @@
 # lumonemployeedb
 
-SQL Challenge: Employee Tracker
-Developers frequently have to create interfaces that allow non-developers to easily view and interact with information stored in databases. These interfaces are called content management systems (CMS). Your assignment this module is to build a command-line application from scratch to manage a company's employee database, using Node.js, Inquirer, and MySQL.
-
-IMPORTANT
-In order to install inquirer, please use npm i inquirer@8.2.4.
-
-Because this application won’t be deployed, you’ll also need to create a walkthrough video that demonstrates its functionality and all of the following acceptance criteria being met. You’ll need to submit a link to the video and add it to the README of your project.
-
-Refer to the Video Submission GuideLinks to an external site. on the Full-Stack Blog for additional guidance on creating a video.
-
-User Story
-AS A business owner
-I WANT to be able to view and manage the departments, roles, and employees in my company
-SO THAT I can organize and plan my business
-Acceptance Criteria
-GIVEN a command-line application that accepts user input
-WHEN I start the application
-THEN I am presented with the following options: view all departments, view all roles, view all employees, add a department, add a role, add an employee, and update an employee role
-WHEN I choose to view all departments
-THEN I am presented with a formatted table showing department names and department ids
-WHEN I choose to view all roles
-THEN I am presented with the job title, role id, the department that role belongs to, and the salary for that role
-WHEN I choose to view all employees
-THEN I am presented with a formatted table showing employee data, including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to
 
 
-WHEN I choose to add a department
-THEN I am prompted to enter the name of the department and that department is added to the database
-WHEN I choose to add a role
-THEN I am prompted to enter the name, salary, and department for the role and that role is added to the database
-WHEN I choose to add an employee
-THEN I am prompted to enter the employee’s first name, last name, role, and manager, and that employee is added to the database
-WHEN I choose to update an employee role
-THEN I am prompted to select an employee to update and their new role and this information is updated in the database
-Mock-Up
-The following video shows an example of the application being used from the command line:
+| Technology Used         | Resource URL           | 
+| ------------- |:-------------:| 
+| Git | [https://git-scm.com/](https://git-scm.com/)     |    
+| JavaScript | [https://developer.mozilla.org/en-US/docs/Web/JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)     
+| Node.JS| [https://developer.mozilla.org/en-US/docs/Glossary/Node.js?utm_source=wordpress%20blog&utm_medium=content%20link&utm_campaign=promote%20mdn](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)    
+| Inquirer |:https://www.npmjs.com/package/inquirer:| 
+| Mysql2 |:https://www.npmjs.com/package/mysql2:| 
 
 
-Getting Started
-You'll need to use the MySQL2 packageLinks to an external site. to connect to your MySQL database and perform queries, and the Inquirer packageLinks to an external site. to interact with the user via the command line.
+## Description 
+![plot](./assets/Screen%20Shot%202023-04-30%20at%207.50.10%20PM.png)
 
-IMPORTANT
-In order to install inquirer, please use npm i inquirer@8.2.4.
+This is a content management tool which has a DB of employees, their roles and salaries.  Users can view and update data directly to the database. 
 
-IMPORTANT
-You will be committing a file that contains your database credentials. Make sure that your MySQL password is not used for any other personal accounts, because it will be visible on GitHub. In upcoming lessons, you will learn how to better secure this password, or you can start researching npm packages now that could help you.
 
-You might also want to make your queries asynchronous. MySQL2 exposes a .promise() function on Connections to upgrade an existing non-Promise connection to use Promises. To learn more and make your queries asynchronous, refer to the npm documentation on MySQL2Links to an external site..
 
-Design the database schema as shown in the following image:
+## Code Refactor Example
 
-Database schema includes tables labeled “employee,” role,” and “department.”
 
-As the image illustrates, your schema should contain the following three tables:
+Below is the inquirer stuff thats used for navigation.  
 
-department
+```inquirer
 
-id: INT PRIMARY KEY
 
-name: VARCHAR(30) to hold department name
 
-role
+function exitPrompt(){
+    inquirer
+        .prompt([
+            {
+                type: 'list',
+                name: 'action',
+                message: 'Return?',
+                choices: [
+                    'Exit'
+                ]
+            }
+        ]).then (action => {
+            console.clear();
+            startPrompt();
 
-id: INT PRIMARY KEY
+        })
+}
 
-title: VARCHAR(30) to hold role title
+function startPrompt() {
+    inquirer
+        .prompt([
+            {
+                type: 'list',
+                name: 'action',
+                message: 'What would you like to do?',
+                choices: [
+                    'View all Employees',
+                    'View All Roles',
+                    'View All Departments',
+                    'Add a Department',
+                    'Add a Role',
+                    'Update an Employee'
+                ]
+            }
+        ])}
 
-salary: DECIMAL to hold role salary
 
-department_id: INT to hold reference to department role belongs to
+Below is the fucntion for finding an employee in the database andd formating the data
 
-employee
+``` JavaScript/MSQL
 
-id: INT PRIMARY KEY
+ case 'View all Employees':
+                    db.query('SELECT employee.id,employee.first_name, employee.last_name, role.title, department.name, role.salary FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id;', (err, results) => {
+                        console.table(results);
+                        console.log(err);
+                    })
+                    exitPrompt()
+                    break;
 
-first_name: VARCHAR(30) to hold employee first name
+Blow is the code for updating a role.  Lots of learning and guidances was need for this.  Working with a tutor helped a lot. 
 
-last_name: VARCHAR(30) to hold employee last name
+``` Javascript
 
-role_id: INT to hold reference to employee role
 
-manager_id: INT to hold reference to another employee that is the manager of the current employee (null if the employee has no manager)
+'Add a Role':
+                    async function addRole() {
+                        try {
+                            const { title, salary, departmentID } = await inquirer.prompt([
+                                {
+                                    type: 'input',
+                                    name: 'title',
+                                    message: 'Enter a role title',
+                                    validate: function (input) {
+                                        if (input.length < 3) {
+                                            return 'Role title must be at least 3 characters long';
+                                        } else {
+                                            return true;
+                                        }
+                                    }
+                                },
+                                {
+                                    type: 'input',
+                                    name: 'salary',
+                                    message: 'Enter the salary for the role',
+                                    validate: function (input) {
+                                        if (isNaN(input)) {
+                                            return 'Salary must be a number';
+                                        } else {
+                                            return true;
+                                        }
+                                    }
+                                },
+                                {
+                                    type: 'input',
+                                    name: 'departmentID',
+                                    message: 'Enter the ID of the department this role belongs to',
+                                    validate: function (input) {
+                                        if (isNaN(input)) {
+                                            return 'Department ID must be a number';
+                                        } else {
+                                            return true;
+                                        }
+                                    }
+                                }
+                            ]);
+                            const conn = await dbpromise.getConnection();
+                            const [rows] = await conn.execute(`INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`, [title, salary, departmentID]);
+                            console.log(`Added ${title} into Roles`);
+                            exitPrompt()
 
-You might want to use a separate file that contains functions for performing specific SQL queries you'll need to use. A constructor function or class could be helpful for organizing these. You might also want to include a seeds.sql file to pre-populate your database, making the development of individual features much easier.
 
-Bonus
-Try to add some additional functionality to your application, such as the ability to do the following:
 
-Update employee managers.
+## Usage 
 
-View employees by manager.
+You will need to clone down all the repro.  Install the needed NPM packages. Then you will need to run a schema or manually insert data into the database.  Afterwards you will probably need to update the MYSQL data to have you have locally.  Then you will be able to execute the program by running "$node node.js" without the $ thats just pointing to the end of the terminal line.
 
-View employees by department.
 
-Delete departments, roles, and employees.
+## Learning Points 
 
-View the total utilized budget of a department—in other words, the combined salaries of all employees in that department.
+
+Geeze learning MYSQL and how to do async functions was quite a beast. I failed and failed and failed some more untiL I was finally able to get some help and get over the hump.    
+
+
+## Author Info
+
+SWEngineer with a lot for the show Severence. 
+
+* [Portfolio](https://bdalberson.github.io/Course2Biopage/)
+* [LinkedIn](https://www.linkedin.com/in/brian-alberson-464b2271/)
+* [Github](https://github.com/bdalberson)
+```
+
+## Credits
+
+Study groups, TAs, and study groups were all useful and needed to get this done.  Also the family for giving me the space and time I needed.   
+
+---
+
+## Tests
+Just testing using Mysql workbench to verify datatables.   
