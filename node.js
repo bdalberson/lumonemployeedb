@@ -2,8 +2,8 @@ const mysql = require('mysql2');
 const mysqlpromise = require('mysql2/promise');
 const inquirer = require('inquirer');
 require('console.table');
-
-const db = mysql.createConnection(
+// all the required depenancies needed to run the software listed above
+const db = mysql.createConnection(   //creates the db connection for the MYSQL entires
     {
         host: `127.0.0.1`,
         user: 'root',
@@ -13,7 +13,7 @@ const db = mysql.createConnection(
     console.log("connected to lumon db!")
 );
 
-const dbpromise = mysqlpromise.createPool(
+const dbpromise = mysqlpromise.createPool(  //promisified MYSQL for updating tables
     {
         host: `127.0.0.1`,
         user: 'root',
@@ -22,7 +22,7 @@ const dbpromise = mysqlpromise.createPool(
     },
 );
 
-function exitPrompt(){
+function exitPrompt(){ //navigation for getting through the menus, this is called after finishing an action
     inquirer
         .prompt([
             {
@@ -40,11 +40,11 @@ function exitPrompt(){
         })
 }
 
-function startPrompt() {
+function startPrompt() {   //starts inquirer
     inquirer
         .prompt([
             {
-                type: 'list',
+                type: 'list',     //lists all of the possible actions
                 name: 'action',
                 message: 'What would you like to do?',
                 choices: [
@@ -59,14 +59,14 @@ function startPrompt() {
         ])
         .then(answer => {
             switch (answer.action) {
-                case 'View all Employees':
+                case 'View all Employees': //selects all the employee records from the DB and formats them
                     db.query('SELECT employee.id,employee.first_name, employee.last_name, role.title, department.name, role.salary FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id;', (err, results) => {
                         console.table(results);
                         console.log(err);
                     })
                     exitPrompt()
                     break;
-                case 'View All Roles':
+                case 'View All Roles':  //selects all the roles from the DB and formats them
                     db.query('SELECT role.id AS role_id, role.title AS job_title, department.name AS department, role.salary FROM role JOIN department ON role.department_id = department.id;', (err, results) => {
                         console.table(results);
                         console.log(err);
@@ -75,14 +75,14 @@ function startPrompt() {
                     break;
                 case 'View All Departments': 
 
-                    db.query('SELECT id, name FROM department;', (err, results) => {
+                    db.query('SELECT id, name FROM department;', (err, results) => {   //selects all the departments from the DB and formats them
                     console.table(results);
                     console.log(err);
                     })
                     exitPrompt()
                     break;
                 case 'Add a Department':
-                    async function addDepartment() {
+                    async function addDepartment() { //is able to update the db with a new department
                         try {
                           const { name } = await inquirer.prompt([{
                             type: 'input',
@@ -97,7 +97,7 @@ function startPrompt() {
                             }
                           }]);
                       
-                          const conn = await dbpromise.getConnection();
+                          const conn = await dbpromise.getConnection(); //db promified actions needed for async updating
                           const [rows] = await conn.execute('INSERT INTO department (name) VALUES (?)', [name]);
                           console.log(`Added ${name} into Departments`);
                           exitPrompt()
@@ -111,10 +111,10 @@ function startPrompt() {
                       addDepartment();
 
                     break;
-                case 'Add a Role':
-                    async function addRole() {
+                case 'Add a Role': 
+                    async function addRole() {   //db promified actions needed for async updating Roles
                         try {
-                            const { title, salary, departmentID } = await inquirer.prompt([
+                            const { title, salary, departmentID } = await inquirer.prompt([ 
                                 {
                                     type: 'input',
                                     name: 'title',
@@ -229,8 +229,8 @@ function startPrompt() {
         });
 }
 
-lumonlogo() 
-startPrompt()
+lumonlogo()  //just some cool ascii art
+startPrompt() //start button for the program
 
 function lumonlogo() {
     console.log(`MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMW0xl;'.      .;cc;'      ..,cdONMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
